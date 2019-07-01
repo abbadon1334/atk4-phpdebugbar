@@ -1,0 +1,17 @@
+{
+    "name": "abbadon1334/atk4-phpdebugbar",
+    "description": "ATK4 UI with PHPDebugBar",
+    "type": "library",
+    "require": {
+        "atk4/ui": "dev-master",
+        "maximebf/debugbar": "^1.15@dev"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "abbadon1334",
+            "email": "fdanti@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
