@@ -1,11 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Abbadon1334\ATK4PHPDebugBar;
+namespace ATK4PHPDebugBar;
 
+use atk4\core\AppScopeTrait;
 use atk4\core\DIContainerTrait;
 use atk4\core\FactoryTrait;
+use atk4\core\InitializerTrait;
+use atk4\data\Persistence;
 use atk4\ui\Exception;
-use Abbadon1334\ATK4PHPDebugBar\Collector\ATK4Logger;
+use ATK4PHPDebugBar\Collector\ATK4Logger;
 use DebugBar\DataCollector\DataCollectorInterface;
 use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\MemoryCollector;
@@ -15,36 +18,47 @@ use DebugBar\DataCollector\PDO\TraceablePDO;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
-use DebugBar\DebugBar as PHPDebugBar;
+use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use PDO;
 
 class DebugBar
 {
-    use \atk4\core\AppScopeTrait;
+    use AppScopeTrait;
     use DIContainerTrait;
     use FactoryTrait;
-    use \atk4\core\InitializerTrait {
+    use InitializerTrait {
         init as _init;
     }
 
-    /** @var PHPDebugBar */
-    private $debugBar;
+    /** @var \DebugBar\DebugBar */
+    protected $debugBar;
 
     /** @var JavascriptRenderer */
-    private $debugBarRenderer;
+    protected $debugBarRenderer;
 
     /** @var PDOCollector */
-    private $PDOCollector;
+    protected $PDOCollector;
 
-    protected $assets_url_relative;
-    protected $assets_url_base = 'vendor/maximebf/debugbar/src/DebugBar/Resources/';
+    /**
+     * @var string
+     */
+    protected $assets_resources_url;
+    /**
+     * @var string
+     */
+    protected $assets_resources_path = 'vendor/maximebf/debugbar/src/DebugBar/Resources/';
 
+    /**
+     *
+     * @throws DebugBarException
+     * @throws \atk4\core\Exception
+     */
     public function init(): void
     {
         $this->_init();
 
-        $this->debugBar         = new PHPDebugBar();
+        $this->debugBar         = new \DebugBar\DebugBar();
         $this->debugBarRenderer = $this->debugBar->getJavascriptRenderer();
 
         $this->addCollector(new MessagesCollector());
@@ -52,38 +66,20 @@ class DebugBar
         $this->setUpApp();
     }
 
-    public function setAssetsBaseUrl($url)
+    /**
+     * @param DataCollectorInterface $dataCollector
+     *
+     * @throws DebugBarException
+     */
+    public function addCollector(DataCollectorInterface $dataCollector): void
     {
-        $this->assets_url_relative = $url;
+        $this->debugBar->addCollector($dataCollector);
     }
 
-    public function setAssetsUrlBase($path)
-    {
-        $this->assets_url_base = $path;
-    }
-
-    protected function processAssets()
-    {
-        $relative_url = implode('/', [$this->assets_url_relative,$this->assets_url_base]);
-
-        // already loaded by ATK
-        $this->debugBarRenderer->disableVendor('jquery');
-
-        // get debug bar enabled Assets
-        list($required_css, $required_js) = $this->debugBarRenderer->getAssets(null,'');
-
-        foreach($required_css as $css)
-        {
-            $this->app->requireCSS($relative_url.$css);
-        }
-
-        foreach($required_js as $js)
-        {
-            $this->app->requireJS($relative_url.$js);
-        }
-    }
-
-    public function setUpApp(): void
+    /**
+     * @throws \atk4\core\Exception
+     */
+    protected function setUpApp(): void
     {
         $this->app->addHook('beforeRender', function ($j): void {
             $this->processAssets();
@@ -92,82 +88,151 @@ class DebugBar
         });
 
         $this->app->addHook('beforeExit', function ($j): void {
-            if(!headers_sent())
+            if (!headers_sent()) {
                 $this->debugBar->sendDataInHeaders();
+            }
         });
 
-        $this->app->addMethod('getDebugBar', function () {
-            return $this->debugBar;
-        });
+        $this->app->addMethod('getDebugBar', function($app) { return $this->getDebugBar(); });
+
+        $this->app->addMethod('getDebugBarCollector', function($app, string $name) { return $this->getCollector($name);});
+
+        $this->app->addMethod('hasDebugBarCollector', function($app, string $name) { return $this->hasCollector($name);});
     }
 
+    /**
+     *
+     */
+    protected function processAssets()
+    {
+        $relative_url = implode('/', [$this->assets_resources_url, $this->assets_resources_path]);
+
+        // already loaded by ATK
+        $this->debugBarRenderer->disableVendor('jquery');
+
+        // get debug bar enabled Assets
+        list($required_css, $required_js) = $this->debugBarRenderer->getAssets(NULL, '');
+
+        foreach ($required_css as $css) {
+            $this->app->requireCSS($relative_url . $css);
+        }
+
+        foreach ($required_js as $js) {
+            $this->app->requireJS($relative_url . $js);
+        }
+    }
+
+    /**
+     * @return \DebugBar\DebugBar
+     */
+    public function getDebugBar(): \DebugBar\DebugBar
+    {
+        return $this->debugBar;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return $this
+     */
+    public function setAssetsResourcesUrl(string $url)
+    {
+        $this->assets_resources_url = $url;
+
+        return $this;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return $this
+     */
+    public function setAssetsResourcesPath(string $path)
+    {
+        $this->assets_resources_path = $path;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @throws DebugBarException
+     */
     public function addDefaultCollectors(): void
     {
-        $this->addCollectorPhpInfo();
-        $this->addCollectorRequestData();
-        $this->addCollectorTimeData();
-        $this->addCollectorMemory();
-        $this->addCollectorExceptions();
+        $this->addCollector(new PhpInfoCollector());
+        $this->addCollector(new RequestDataCollector());
+        $this->addCollector(new TimeDataCollector());
+        $this->addCollector(new MemoryCollector());
+        $this->addCollector(new ExceptionsCollector());
     }
 
-    public function addCollector(DataCollectorInterface $dataCollector): void
+    /**
+     * @param string $name
+     *
+     * @return DataCollectorInterface
+     * @throws DebugBarException
+     */
+    public function getCollector(string $name): DataCollectorInterface
     {
-        $this->debugBar->addCollector($dataCollector);
+        return $this->debugBar->getCollector($name);
     }
 
-    public function addCollectorAppLogger(): void
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasCollector(string $name): bool
+    {
+        return $this->debugBar->hasCollector($name);
+    }
+
+    /**
+     * @throws DebugBarException
+     */
+    public function addATK4LoggerCollector(): void
     {
         $this->addCollector(new ATK4Logger($this->app));
     }
 
-    public function addPersistenceCollector(?PDO $pdo= null, string $prefix = 'db'): void
+    /**
+     * @param string               $prefix
+     * @param Persistence\SQL|null $persistence
+     *
+     * @throws Exception
+     * @throws DebugBarException
+     */
+    public function addATK4PersistenceSQLCollector(?Persistence\SQL $persistence = NULL, string $prefix = 'db'): void
     {
-        $pdo = $pdo ?? $this->app->db->connection->connection() ?? null;
+        $persistence = $persistence ?? $this->app->db ?? NULL;
 
-        if (!is_a($pdo, PDO::class)) {
+        if (!is_a($persistence, PDO::class)) {
             throw new Exception([
                 'This collector needs a PDO instance as argument or defined in the $app',
             ]);
         }
 
+        $this->addCollectorPDO($persistence->connection->connection(), $prefix);
+    }
+
+    /**
+     * @param string   $prefix
+     * @param PDO|null $pdo
+     *
+     * @throws DebugBarException
+     */
+    public function addCollectorPDO(PDO $pdo = NULL, string $prefix = 'db'): void
+    {
         $pdoRead  = new TraceablePDO($pdo);
         $pdoWrite = new TraceablePDO($pdo);
 
         $pdoCollector = new PDOCollector();
 
-        $pdoCollector->addConnection($pdoRead, $prefix.'-read');
-        $pdoCollector->addConnection($pdoWrite, $prefix.'-write');
+        $pdoCollector->addConnection($pdoRead, $prefix . '-read');
+        $pdoCollector->addConnection($pdoWrite, $prefix . '-write');
 
         $this->addCollector($pdoCollector);
-    }
-
-    public function addCollectorPhpInfo(): void
-    {
-        $this->addCollector(new PhpInfoCollector());
-    }
-
-    public function addCollectorRequestData(): void
-    {
-        $this->addCollector(new RequestDataCollector());
-    }
-
-    public function addCollectorTimeData(): void
-    {
-        $this->addCollector(new TimeDataCollector());
-    }
-
-    public function addCollectorMemory(): void
-    {
-        $this->addCollector(new MemoryCollector());
-    }
-
-    public function addCollectorExceptions(): void
-    {
-        $this->addCollector(new ExceptionsCollector());
-    }
-
-    public function getCollector(string $name): DataCollectorInterface
-    {
-        return $this->debugBar->getCollector($name);
     }
 }

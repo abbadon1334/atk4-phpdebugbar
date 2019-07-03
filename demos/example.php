@@ -20,16 +20,16 @@ $app = new App([
 ]);
 
 $app->initLayout(\atk4\ui\Layout\Centered::class);
-$app->add($debugBar = new Abbadon1334\ATK4PHPDebugBar\DebugBar());
-$debugBar->setAssetsBaseUrl('http://localhost/nemesi/atk4-phpdebugbar');
+$app->add($debugBar = new ATK4PHPDebugBar\DebugBar());
+$debugBar->setAssetsResourcesUrl('http://localhost/nemesi/atk4-phpdebugbar');
 $debugBar->addDefaultCollectors();
 
 $loader = $app->add('Loader');
-$loader->set(function ($l) use ($debugBar, $loader) {
+
+$loader->set(function ($l) {
 
     $number = rand(1, 100);
-
-    $loader->app->getDebugBar()['messages']->addMessage('new message :' . $number);
+    $l->app->getDebugBarCollector('messages')->addMessage('new message :' . $number);
 
     $l->add(['Text', 'random :' . $number]);
 });

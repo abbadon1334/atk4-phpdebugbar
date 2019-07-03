@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace Abbadon1334\ATK4PHPDebugBar\Collector;
+namespace ATK4PHPDebugBar\Collector;
 
 use atk4\core\DebugTrait;
 use atk4\ui\App;
@@ -32,7 +32,7 @@ class ATK4Logger extends MessagesCollector
 
     public function getName()
     {
-        return 'atk4';
+        return 'atk4-logger';
     }
 
     public function log($level, $message, array $context = []): void
