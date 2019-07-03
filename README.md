@@ -1,4 +1,7 @@
 # atk4-phpdebugbar
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7b79e0f01d7f40bf8a0c4f2398f5560a)](https://app.codacy.com/app/abbadon1334/atk4-phpdebugbar?utm_source=github.com&utm_medium=referral&utm_content=abbadon1334/atk4-phpdebugbar&utm_campaign=Badge_Grade_Settings)
+
 ATK4 With PHPDebugBar
 
 #### First step :
