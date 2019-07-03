@@ -1,11 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
 
 namespace ATK4PHPDebugBar\Collector;
 
-use atk4\core\DebugTrait;
 use atk4\ui\App;
-use Psr\Log\LogLevel;
 use DebugBar\DataCollector\MessagesCollector;
 
 class ATK4Logger extends MessagesCollector
@@ -18,7 +17,7 @@ class ATK4Logger extends MessagesCollector
     public function __construct(App $app)
     {
         $this->app_original_logger = $app->logger ?? null;
-        $app->logger               = $this;
+        $app->logger = $this;
     }
 
     public function write($message, $level): void
