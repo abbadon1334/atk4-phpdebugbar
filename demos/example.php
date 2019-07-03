@@ -19,7 +19,7 @@ $app = new App([
 //    'db'    => $db
 ]);
 
-$app->initLayout(\atk4\ui\Layout\Centered::class);
+$app->initLayout('Centered');
 $app->add($debugBar = new ATK4PHPDebugBar\DebugBar());
 $debugBar->setAssetsResourcesUrl('../');
 $debugBar->addDefaultCollectors();
@@ -33,6 +33,7 @@ $loader->set(function ($l) {
 
     $l->add(['Text', 'random :' . $number]);
 });
+
 /** @var Button $button */
 $button = $app->add(['Button', 'test']);
 $button->on('click', function ($j) use ($loader) {
