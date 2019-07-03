@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ATK4PHPDebugBar;
 
@@ -50,7 +52,6 @@ class DebugBar
     protected $assets_resources_path = 'vendor/maximebf/debugbar/src/DebugBar/Resources/';
 
     /**
-     *
      * @throws DebugBarException
      * @throws \atk4\core\Exception
      */
@@ -58,7 +59,7 @@ class DebugBar
     {
         $this->_init();
 
-        $this->debugBar         = new \DebugBar\DebugBar();
+        $this->debugBar = new \DebugBar\DebugBar();
         $this->debugBarRenderer = $this->debugBar->getJavascriptRenderer();
 
         $this->addCollector(new MessagesCollector());
@@ -88,21 +89,24 @@ class DebugBar
         });
 
         $this->app->addHook('beforeExit', function ($j): void {
-            if (!headers_sent()) {
+            if (! headers_sent()) {
                 $this->debugBar->sendDataInHeaders();
             }
         });
 
-        $this->app->addMethod('getDebugBar', function($app) { return $this->getDebugBar(); });
+        $this->app->addMethod('getDebugBar', function ($app) {
+            return $this->getDebugBar();
+        });
 
-        $this->app->addMethod('getDebugBarCollector', function($app, string $name) { return $this->getCollector($name);});
+        $this->app->addMethod('getDebugBarCollector', function ($app, string $name) {
+            return $this->getCollector($name);
+        });
 
-        $this->app->addMethod('hasDebugBarCollector', function($app, string $name) { return $this->hasCollector($name);});
+        $this->app->addMethod('hasDebugBarCollector', function ($app, string $name) {
+            return $this->hasCollector($name);
+        });
     }
 
-    /**
-     *
-     */
     protected function processAssets()
     {
         $relative_url = implode('/', [$this->assets_resources_url, $this->assets_resources_path]);
@@ -111,14 +115,14 @@ class DebugBar
         $this->debugBarRenderer->disableVendor('jquery');
 
         // get debug bar enabled Assets
-        list($required_css, $required_js) = $this->debugBarRenderer->getAssets(NULL, '');
+        [$required_css, $required_js] = $this->debugBarRenderer->getAssets(null, '');
 
         foreach ($required_css as $css) {
-            $this->app->requireCSS($relative_url . $css);
+            $this->app->requireCSS($relative_url.$css);
         }
 
         foreach ($required_js as $js) {
-            $this->app->requireJS($relative_url . $js);
+            $this->app->requireJS($relative_url.$js);
         }
     }
 
@@ -155,7 +159,6 @@ class DebugBar
     }
 
     /**
-     *
      * @throws DebugBarException
      */
     public function addDefaultCollectors(): void
@@ -177,7 +180,6 @@ class DebugBar
     {
         return $this->debugBar->getCollector($name);
     }
-
 
     /**
      * @param string $name
@@ -204,11 +206,11 @@ class DebugBar
      * @throws Exception
      * @throws DebugBarException
      */
-    public function addATK4PersistenceSQLCollector(?Persistence\SQL $persistence = NULL, string $prefix = 'db'): void
+    public function addATK4PersistenceSQLCollector(?Persistence\SQL $persistence = null, string $prefix = 'db'): void
     {
-        $persistence = $persistence ?? $this->app->db ?? NULL;
+        $persistence = $persistence ?? $this->app->db ?? null;
 
-        if (!is_a($persistence, PDO::class)) {
+        if (! is_a($persistence, PDO::class)) {
             throw new Exception([
                 'This collector needs a PDO instance as argument or defined in the $app',
             ]);
@@ -223,15 +225,15 @@ class DebugBar
      *
      * @throws DebugBarException
      */
-    public function addCollectorPDO(PDO $pdo = NULL, string $prefix = 'db'): void
+    public function addCollectorPDO(PDO $pdo = null, string $prefix = 'db'): void
     {
-        $pdoRead  = new TraceablePDO($pdo);
+        $pdoRead = new TraceablePDO($pdo);
         $pdoWrite = new TraceablePDO($pdo);
 
         $pdoCollector = new PDOCollector();
 
-        $pdoCollector->addConnection($pdoRead, $prefix . '-read');
-        $pdoCollector->addConnection($pdoWrite, $prefix . '-write');
+        $pdoCollector->addConnection($pdoRead, $prefix.'-read');
+        $pdoCollector->addConnection($pdoWrite, $prefix.'-write');
 
         $this->addCollector($pdoCollector);
     }
