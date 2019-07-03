@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/abbadon1334/atk4-phpdebugbar.svg?branch=master)](https://travis-ci.org/abbadon1334/atk4-fastroute)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/757dd5a567944d4e97cc00f9c4a437b2)](https://www.codacy.com/app/abbadon1334/atk4-phpdebugbar?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abbadon1334/atk4-phpdebugbar&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/757dd5a567944d4e97cc00f9c4a437b2)](https://www.codacy.com/app/abbadon1334/atk4-phpdebugbar?utm_source=github.com&utm_medium=referral&utm_content=abbadon1334/atk4-phpdebugbar&utm_campaign=Badge_Coverage)
+
 # atk4-phpdebugbar
 ATK4 With PHPDebugBar
 
