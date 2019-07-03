@@ -21,7 +21,7 @@ $app = new App([
 
 $app->initLayout(\atk4\ui\Layout\Centered::class);
 $app->add($debugBar = new ATK4PHPDebugBar\DebugBar());
-$debugBar->setAssetsResourcesUrl('http://localhost/nemesi/atk4-phpdebugbar');
+$debugBar->setAssetsResourcesUrl('../');
 $debugBar->addDefaultCollectors();
 
 $loader = $app->add('Loader');
