@@ -1,10 +1,11 @@
 <?php
 
-ini_set('display_errors',true);
+ini_set('display_errors', true);
 
 include 'bootstrap.php';
 
 use atk4\ui\App;
+
 /*
 try {
     $db = new \atk4\data\Persistence\SQL('mysql:dbname=atk4;host=localhost', 'root', 'root');
@@ -27,11 +28,10 @@ $debugBar->addDefaultCollectors();
 $loader = $app->add('Loader');
 
 $loader->set(function ($l) {
-
     $number = rand(1, 100);
-    $l->app->getDebugBarCollector('messages')->addMessage('new message :' . $number);
+    $l->app->getDebugBarCollector('messages')->addMessage('new message :'.$number);
 
-    $l->add(['Text', 'random :' . $number]);
+    $l->add(['Text', 'random :'.$number]);
 });
 
 /** @var Button $button */
