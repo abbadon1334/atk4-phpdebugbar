@@ -16,8 +16,7 @@ class ATK4Logger extends MessagesCollector
 
     public function __construct(App $app)
     {
-        if($app->logger instanceof \Psr\Log\LoggerInterface)
-        {
+        if ($app->logger instanceof \Psr\Log\LoggerInterface) {
             $this->app_original_logger = clone $app->logger;
             unset($app->logger);
         }
@@ -30,7 +29,7 @@ class ATK4Logger extends MessagesCollector
         parent::addMessage($message, $label, $isString);
 
         if ($this->app_original_logger) {
-            $this->app_original_logger->log($label,$message);
+            $this->app_original_logger->log($label, $message);
         }
     }
 

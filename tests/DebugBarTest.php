@@ -2,7 +2,6 @@
 
 namespace ATK4PHPDebugBar;
 
-
 use atk4\ui\App;
 use DebugBar\DataCollector\PhpInfoCollector;
 use PHPUnit\Framework\TestCase;

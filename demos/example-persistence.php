@@ -2,13 +2,13 @@
 
 include 'bootstrap.php';
 
-use atk4\dsql\Connection;
 use atk4\ui\App;
 use ATK4PHPDebugBar\DebugBar;
 
 class User extends \atk4\data\Model
 {
     public $table = 'user';
+
     public function init()
     {
         parent::init();
@@ -25,10 +25,9 @@ $model_user = new User($db);
 // Migration : if not exists table create it
 (\atk4\schema\Migration::getMigration($model_user))->migrate();
 
-
 $app = new App([
     'title' => 'Agile UI - DebugBar',
-    'db'    => $db
+    'db'    => $db,
 ]);
 
 $app->initLayout('Centered');

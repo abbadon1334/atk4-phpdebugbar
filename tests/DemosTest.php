@@ -24,9 +24,7 @@ class DemosTest extends TestCase
             include __DIR__.'/../demos/'.$file;
 
             $content = ob_get_clean();
-
         } catch (\Throwable $e) {
-
             ob_end_flush();
 
             $e = new Exception($e->getMessage(), $e->getCode(), $e);
@@ -45,7 +43,7 @@ class DemosTest extends TestCase
             ['example.php'],
             ['example-logger.php'],
             ['example-logger-debugTrait.php'],
-            ['example-persistence.php']
+            ['example-persistence.php'],
         ];
     }
 }
