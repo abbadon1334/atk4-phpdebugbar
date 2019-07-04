@@ -16,26 +16,26 @@ class ATK4Logger extends MessagesCollector
 
     public function __construct(App $app)
     {
-        $this->app_original_logger = $app->logger ?? null;
+        if($app->logger instanceof \Psr\Log\LoggerInterface)
+        {
+            $this->app_original_logger = clone $app->logger;
+            unset($app->logger);
+        }
+
         $app->logger = $this;
     }
 
-    public function write($message, $level): void
+    public function addMessage($message, $label = 'info', $isString = true)
     {
-        if ($this->app_original_logger) {
-            $this->app_original_logger->log($message, $level);
-        }
+        parent::addMessage($message, $label, $isString);
 
-        $this->addMessage($message, $level);
+        if ($this->app_original_logger) {
+            $this->app_original_logger->log($label,$message);
+        }
     }
 
     public function getName()
     {
-        return 'atk4-logger';
-    }
-
-    public function log($level, $message, array $context = []): void
-    {
-        $this->write($message, $level);
+        return 'ATKAppLog';
     }
 }
