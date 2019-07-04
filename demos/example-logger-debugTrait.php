@@ -4,14 +4,20 @@ include 'bootstrap.php';
 
 use atk4\ui\App;
 
-$app = new App([
+class AppDebug extends App
+{
+    use \atk4\core\DebugTrait;
+}
+
+$app = new AppDebug([
     'title' => 'Agile UI - DebugBar',
+    'debug' => true,
 ]);
 
 $app->initLayout('Centered');
 $app->add($debugBar = new ATK4PHPDebugBar\DebugBar());
 $debugBar->setAssetsResourcesUrl('../');
-$debugBar->addDefaultCollectors();
+$debugBar->addATK4LoggerCollector();
 
 $loader = $app->add('Loader');
 
@@ -20,6 +26,8 @@ $loader->set(function ($l) {
     $l->app->getDebugBarCollector('messages')->addMessage('new message :'.$number);
 
     $l->add(['Text', 'random :'.$number]);
+
+    $l->app->debug('debug trait :'.$number);
 });
 
 /** @var Button $button */
