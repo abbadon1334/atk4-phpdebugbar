@@ -7,13 +7,12 @@ use ATK4PHPDebugBar\DebugBar;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-
 $monolog = new \Monolog\Logger('atk4');
-$monolog->pushHandler(new StreamHandler(__DIR__ . '/test.log', Logger::DEBUG));
+$monolog->pushHandler(new StreamHandler(__DIR__.'/test.log', Logger::DEBUG));
 
 $app = new App([
     'title' => 'Agile UI - DebugBar',
-    'logger'=> $monolog
+    'logger'=> $monolog,
 ]);
 
 $app->initLayout('Centered');
@@ -23,7 +22,6 @@ $debugBar->setAssetsResourcesUrl('../');
 $debugBar->addATK4LoggerCollector();
 
 $app->getDebugBarCollector('ATKAppLog')->addMessage('first message');
-
 
 $loader = $app->add('Loader');
 
