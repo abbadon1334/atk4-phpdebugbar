@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 class DebugBarTest extends TestCase
 {
     protected $app;
+    protected $debugbar;
 
     public function setUp() : void
     {
@@ -18,9 +19,13 @@ class DebugBarTest extends TestCase
         ]);
 
         $app->initLayout('Centered');
-        $app->add($debugBar = new \ATK4PHPDebugBar\DebugBar());
-        $debugBar->setAssetsResourcesUrl('../');
-        $debugBar->addDefaultCollectors();
+        $app->add($this->debugBar = new \ATK4PHPDebugBar\DebugBar());
+        $this->debugBar->setAssetsResourcesUrl('../');
+
+        /* just for coverage call setAssetsResourcesPath*/
+        $this->debugBar->setAssetsResourcesPath('vendor/maximebf/debugbar/src/DebugBar/Resources/');
+
+        $this->debugBar->addDefaultCollectors();
 
         $this->app = $app;
     }
@@ -33,5 +38,14 @@ class DebugBarTest extends TestCase
 
         $this->assertEquals(true, $this->app->hasDebugBarCollector('php'));
         $this->assertEquals(false, $this->app->hasDebugBarCollector('not exists'));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSendMessagesViaHeaders()
+    {
+        $this->app->hook('beforeExit');
+        $this->addToAssertionCount(1);
     }
 }

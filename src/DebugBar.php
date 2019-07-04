@@ -210,12 +210,6 @@ class DebugBar
     {
         $persistence = $persistence ?? $this->app->db ?? null;
 
-        if (! is_a($persistence, Persistence\SQL::class)) {
-            throw new Exception([
-                'This collector needs a PDO instance as argument or defined in the $app',
-            ]);
-        }
-
         $this->addCollectorPDO($persistence->connection->connection(), $prefix);
     }
 
