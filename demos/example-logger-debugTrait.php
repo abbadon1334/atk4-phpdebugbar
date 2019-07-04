@@ -3,17 +3,15 @@
 include 'bootstrap.php';
 
 use atk4\ui\App;
-use ATK4PHPDebugBar\DebugBar;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
-class AppDebug extends App {
+class AppDebug extends App
+{
     use \atk4\core\DebugTrait;
 }
 
 $app = new AppDebug([
     'title' => 'Agile UI - DebugBar',
-    'debug' => true
+    'debug' => true,
 ]);
 
 $app->initLayout('Centered');
