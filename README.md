@@ -101,7 +101,6 @@ To interact with the logger :
 
 No interaction excepted, just add logs to PHPDebugBar of every call to PDO made by Persistence\SQL  
 
-
 #### Helpers
 
 on Init, ATK4PHPDebugBar will add 3 dynamic methods to AppScope :
