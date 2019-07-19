@@ -223,11 +223,11 @@ class DebugBar
     public function addCollectorPDO(PDO $pdo = null, string $prefix = null): void
     {
         $prefix = $prefix ?? 'db';
-        
+
         $pdoRead = new TraceablePDO($pdo);
         $pdoWrite = new TraceablePDO($pdo);
 
-        $pdoCollector = new PDOCollector();        
+        $pdoCollector = new PDOCollector();
 
         $pdoCollector->addConnection($pdoRead, $prefix.'-read');
         $pdoCollector->addConnection($pdoWrite, $prefix.'-write');
