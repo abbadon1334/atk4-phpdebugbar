@@ -1,8 +1,9 @@
 <?php
 
-namespace ATK4PHPDebugBar;
+namespace ATK4PHPDebugBar\Test;
 
 use atk4\ui\App;
+use ATK4PHPDebugBar\DebugBar;
 use DebugBar\DataCollector\PhpInfoCollector;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +19,7 @@ class DebugBarTest extends TestCase
         ]);
 
         $app->initLayout('Centered');
-        $app->add($this->debugBar = new \ATK4PHPDebugBar\DebugBar());
+        $app->add($this->debugBar = new DebugBar());
         $this->debugBar->setAssetsResourcesUrl('../');
 
         /* just for coverage call setAssetsResourcesPath*/
