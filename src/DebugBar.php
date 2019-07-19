@@ -200,27 +200,30 @@ class DebugBar
     }
 
     /**
-     * @param string               $prefix
+     * @param string|null          $prefix
      * @param Persistence\SQL|null $persistence
      *
      * @throws Exception
      * @throws DebugBarException
      */
-    public function addATK4PersistenceSQLCollector(?Persistence\SQL $persistence = null, string $prefix = 'db'): void
+    public function addATK4PersistenceSQLCollector(?Persistence\SQL $persistence = null, string $prefix = null): void
     {
         $persistence = $persistence ?? $this->app->db ?? null;
+        $prefix = $prefix ?? 'db';
 
         $this->addCollectorPDO($persistence->connection->connection(), $prefix);
     }
 
     /**
-     * @param string   $prefix
-     * @param PDO|null $pdo
+     * @param string|null $prefix
+     * @param PDO|null    $pdo
      *
      * @throws DebugBarException
      */
-    public function addCollectorPDO(PDO $pdo = null, string $prefix = 'db'): void
+    public function addCollectorPDO(PDO $pdo = null, string $prefix = null): void
     {
+        $prefix = $prefix ?? 'db';
+
         $pdoRead = new TraceablePDO($pdo);
         $pdoWrite = new TraceablePDO($pdo);
 
