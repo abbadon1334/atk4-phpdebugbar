@@ -49,7 +49,8 @@ class DebugBar
     /**
      * @var string
      */
-    protected $assets_resources_path = 'vendor/maximebf/debugbar/src/DebugBar/Resources/';
+    protected $assets_resources_path = 'vendor'.DIRECTORY_SEPARATOR.'maximebf'.DIRECTORY_SEPARATOR.'debugbar'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'DebugBar'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR;
+
 
     /**
      * @throws DebugBarException
