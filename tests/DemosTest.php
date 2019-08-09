@@ -9,7 +9,9 @@ class DemosTest extends TestCase
 {
     public function tearDown(): void
     {
-        @unlink(__DIR__.'/../demos/test.log');
+        if (file_exists(__DIR__.'/../demos/test.log')) {
+            unlink(__DIR__.'/../demos/test.log');
+        }
     }
 
     /**
