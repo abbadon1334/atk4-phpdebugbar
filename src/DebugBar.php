@@ -23,6 +23,8 @@ use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
+use DebugBar\OpenHandler;
+use DebugBar\Storage\FileStorage;
 
 class DebugBar
 {
@@ -46,10 +48,21 @@ class DebugBar
     /**
      * @var string
      */
-    protected $assets_resources_path = 'vendor' . DIRECTORY_SEPARATOR . 'maximebf' . DIRECTORY_SEPARATOR . 'debugbar' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'DebugBar' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR;
+    protected $assets_resources_path = 'vendor'.DIRECTORY_SEPARATOR.'maximebf'.DIRECTORY_SEPARATOR.'debugbar'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'DebugBar'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR;
 
     /** @var TimeDataCollector */
     protected $timeDataCollector;
+
+    /** @var string */
+    public $open_handler;
+
+    /** @var FileStorage */
+    public $file_storage;
+
+    public function __construct($defaults = [])
+    {
+        $this->setDefaults($defaults);
+    }
 
     /**
      * @throws DebugBarException
@@ -59,14 +72,49 @@ class DebugBar
     {
         $this->_init();
 
+        $this->open_handler = $this->open_handler ?? '/debugbar_handler';
+
+        $this->file_storage = $this->file_storage ?? new FileStorage(getcwd().'/tmp');
+
         $this->timeDataCollector = new TimeDataCollector();
 
         $this->debugBar         = new \DebugBar\DebugBar();
+
         $this->debugBarRenderer = $this->debugBar->getJavascriptRenderer();
 
         $this->addCollector(new MessagesCollector());
 
         $this->setUpApp();
+
+        if ($this->app->hasMethod('getRouter')) {
+            $router = $this->app->getRouter();
+
+            $router
+                ->addRoute($this->open_handler)
+                ->addMethod('GET')
+                ->setHandler(
+                    new \Abbadon1334\ATKFastRoute\Handler\RoutedCallable(function (...$parameters): void {
+                        $openHandler = new OpenHandler($this->debugBar);
+                        $openHandler->handle();
+                    })
+                );
+
+            $router
+                ->addRoute('/debugbar/{path:.+}')
+                ->addMethod('GET')
+                ->setHandler(
+                    new \Abbadon1334\ATKFastRoute\Handler\RoutedServeStatic(
+                        __DIR__.'/../../../maximebf/debugbar/src/DebugBar/Resources',
+                        [
+                            'css',
+                            'js',
+                            'woff',
+                            'woff2',
+                            'ttf',
+                        ]
+                    )
+                );
+        }
     }
 
     /**
@@ -84,48 +132,74 @@ class DebugBar
      */
     protected function setUpApp(): void
     {
-        $this->app->addHook(
-            'beforeRender', function ($j): void {
+        $this->debugBar->setStorage($this->file_storage);
+        $this->debugBarRenderer->setOpenHandlerUrl($this->open_handler);
+        $this->debugBar->sendDataInHeaders($this->isJsonRequest() ? true : null);
+
+        $this->app->addHook('beforeRender', function ($j): void {
             $this->processAssets();
-        }
-        );
+        });
 
-        $this->app->addHook(
-            'beforeOutput', function ($j): void {
-            $this->app->html->template->appendHTML('Content', $this->debugBarRenderer->render());
-        }
-        );
+        $this->app->addHook('beforeOutput', function ($j): void {
+            $this->debugBar->collect();
+            $this->app->html->template->appendHTML(
+                'Content',
+                $this->debugBarRenderer->render(true, !$this->isJsonRequest())
+            );
+        });
 
-        $this->app->addHook(
-            'beforeExit', function ($j): void {
-            if (!headers_sent()) {
-                $this->debugBar->sendDataInHeaders(false);
+        $this->app->addHook('beforeExit', function ($j): void {
+            $this->debugBar->collect();
+        }, [], 200);
+
+        $this->app->addMethod(
+            'getDebugBar',
+            function ($app) {
+                return $this->getDebugBar();
             }
-        }
         );
 
         $this->app->addMethod(
-            'getDebugBar', function ($app) {
-            return $this->getDebugBar();
-        }
+            'getDebugBarCollector',
+            function ($app, string $name) {
+                return $this->getCollector($name);
+            }
         );
 
         $this->app->addMethod(
-            'getDebugBarCollector', function ($app, string $name) {
-            return $this->getCollector($name);
-        }
-        );
-
-        $this->app->addMethod(
-            'hasDebugBarCollector', function ($app, string $name) {
-            return $this->hasCollector($name);
-        }
+            'hasDebugBarCollector',
+            function ($app, string $name) {
+                return $this->hasCollector($name);
+            }
         );
     }
 
-    protected function processAssets()
+    /**
+     * Most of the ajax request will require sending exception in json
+     * instead of html, except for tab.
+     *
+     * @return bool
+     */
+    protected function isJsonRequest()
     {
-        $relative_url = implode('/', [$this->assets_resources_url, $this->assets_resources_path]);
+        //No need of it
+        //if (isset($_GET['__atk_tab'])) {
+        //    return false;
+        //}
+        //
+
+        if (isset($_GET['json'])) {
+            return true;
+        }
+
+        return 'xmlhttprequest' === strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '');
+    }
+
+    protected function processAssets(): void
+    {
+        $relative_url = $this->assets_resources_url;
+        $relative_url.= $relative_url === null ? '/' : '';
+        $relative_url.= $this->assets_resources_path;
 
         // already loaded by ATK
         $this->debugBarRenderer->disableVendor('jquery');
@@ -134,11 +208,11 @@ class DebugBar
         [$required_css, $required_js] = $this->debugBarRenderer->getAssets(null, '');
 
         foreach ($required_css as $css) {
-            $this->app->requireCSS($relative_url . $css);
+            $this->app->requireCSS($relative_url.$css);
         }
 
         foreach ($required_js as $js) {
-            $this->app->requireJS($relative_url . $js);
+            $this->app->requireJS($relative_url.$js);
         }
     }
 
@@ -225,9 +299,9 @@ class DebugBar
      */
     public function addATK4PersistenceSQLCollector(?Persistence\SQL $persistence = null): void
     {
-        $persistence = $persistence ?? $this->app->db;
+        $db = $persistence ?? $this->app->db;
 
-        $pdo = new TraceablePDO($persistence->connection->connection());
+        $pdo = new TraceablePDO($db->connection->connection());
         $this->addCollector(new PDOCollector($pdo, $this->timeDataCollector));
 
         if (!$this->hasCollector($this->timeDataCollector->getName())) {

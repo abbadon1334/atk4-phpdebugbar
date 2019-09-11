@@ -27,7 +27,7 @@ class ATK4Logger extends MessagesCollector
         $app->logger = $this;
     }
 
-    public function addMessage($message, $label = 'info', $isString = true)
+    public function addMessage($message, $label = 'info', $isString = true): void
     {
         parent::addMessage($message, $label, $isString);
 
