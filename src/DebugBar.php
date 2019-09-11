@@ -9,8 +9,6 @@ use atk4\core\DIContainerTrait;
 use atk4\core\FactoryTrait;
 use atk4\core\InitializerTrait;
 use atk4\data\Persistence;
-use atk4\ui\Exception;
-use ATK4PHPDebugBar\Bridge\ATK4Collector;
 use ATK4PHPDebugBar\Collector\ATK4Logger;
 use DebugBar\DataCollector\DataCollectorInterface;
 use DebugBar\DataCollector\ExceptionsCollector;
@@ -46,7 +44,7 @@ class DebugBar
     /**
      * @var string
      */
-    protected $assets_resources_path = 'vendor' . DIRECTORY_SEPARATOR . 'maximebf' . DIRECTORY_SEPARATOR . 'debugbar' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'DebugBar' . DIRECTORY_SEPARATOR . 'Resources' . DIRECTORY_SEPARATOR;
+    protected $assets_resources_path = 'vendor'.DIRECTORY_SEPARATOR.'maximebf'.DIRECTORY_SEPARATOR.'debugbar'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'DebugBar'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR;
 
     /** @var TimeDataCollector */
     protected $timeDataCollector;
@@ -61,7 +59,7 @@ class DebugBar
 
         $this->timeDataCollector = new TimeDataCollector();
 
-        $this->debugBar         = new \DebugBar\DebugBar();
+        $this->debugBar = new \DebugBar\DebugBar();
         $this->debugBarRenderer = $this->debugBar->getJavascriptRenderer();
 
         $this->addCollector(new MessagesCollector());
@@ -86,40 +84,40 @@ class DebugBar
     {
         $this->app->addHook(
             'beforeRender', function ($j): void {
-            $this->processAssets();
-        }
+                $this->processAssets();
+            }
         );
 
         $this->app->addHook(
             'beforeOutput', function ($j): void {
-            $this->app->html->template->appendHTML('Content', $this->debugBarRenderer->render());
-        }
+                $this->app->html->template->appendHTML('Content', $this->debugBarRenderer->render());
+            }
         );
 
         $this->app->addHook(
             'beforeExit', function ($j): void {
-            if (!headers_sent()) {
-                $this->debugBar->sendDataInHeaders(false);
+                if (! headers_sent()) {
+                    $this->debugBar->sendDataInHeaders(false);
+                }
             }
-        }
         );
 
         $this->app->addMethod(
             'getDebugBar', function ($app) {
-            return $this->getDebugBar();
-        }
+                return $this->getDebugBar();
+            }
         );
 
         $this->app->addMethod(
             'getDebugBarCollector', function ($app, string $name) {
-            return $this->getCollector($name);
-        }
+                return $this->getCollector($name);
+            }
         );
 
         $this->app->addMethod(
             'hasDebugBarCollector', function ($app, string $name) {
-            return $this->hasCollector($name);
-        }
+                return $this->hasCollector($name);
+            }
         );
     }
 
@@ -134,11 +132,11 @@ class DebugBar
         [$required_css, $required_js] = $this->debugBarRenderer->getAssets(null, '');
 
         foreach ($required_css as $css) {
-            $this->app->requireCSS($relative_url . $css);
+            $this->app->requireCSS($relative_url.$css);
         }
 
         foreach ($required_js as $js) {
-            $this->app->requireJS($relative_url . $js);
+            $this->app->requireJS($relative_url.$js);
         }
     }
 
@@ -205,7 +203,7 @@ class DebugBar
         $this->addCollector(new MemoryCollector());
         $this->addCollector(new ExceptionsCollector());
 
-        if (!$this->hasCollector($this->timeDataCollector->getName())) {
+        if (! $this->hasCollector($this->timeDataCollector->getName())) {
             $this->addCollector($this->timeDataCollector);
         }
     }
@@ -230,7 +228,7 @@ class DebugBar
         $pdo = new TraceablePDO($persistence->connection->connection());
         $this->addCollector(new PDOCollector($pdo, $this->timeDataCollector));
 
-        if (!$this->hasCollector($this->timeDataCollector->getName())) {
+        if (! $this->hasCollector($this->timeDataCollector->getName())) {
             $this->addCollector($this->timeDataCollector);
         }
     }
