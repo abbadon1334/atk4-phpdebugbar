@@ -1,6 +1,6 @@
 <?php
 
-include 'bootstrap.php';
+require_once 'bootstrap.php';
 
 use atk4\ui\App;
 use ATK4PHPDebugBar\DebugBar;
@@ -20,11 +20,6 @@ class User extends \atk4\data\Model
 // start DbConnection
 $db = \atk4\data\Persistence::connect('sqlite::memory:');
 
-$model_user = new User($db);
-
-// Migration : if not exists table create it
-(\atk4\schema\Migration::getMigration($model_user))->migrate();
-
 $app = new App([
     'title' => 'Agile UI - DebugBar',
     'db'    => $db,
@@ -35,6 +30,11 @@ $app->add($debugBar = new ATK4PHPDebugBar\DebugBar());
 $debugBar->setAssetsResourcesUrl('../');
 //$debugBar->addDefaultCollectors();
 $debugBar->addATK4PersistenceSQLCollector();
+
+$model_user = new User($app->db);
+
+// Migration : if not exists table create it
+(\atk4\schema\Migration::getMigration($model_user))->migrate();
 
 $model_user->insert(['name'=>'test 1', 'email'=>'test1@test.it']);
 $model_user->insert(['name'=>'test 2', 'email'=>'test2@test.it']);
