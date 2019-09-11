@@ -10,7 +10,6 @@ use atk4\core\FactoryTrait;
 use atk4\core\InitializerTrait;
 use atk4\data\Persistence;
 use atk4\ui\Exception;
-use ATK4PHPDebugBar\Bridge\ATK4Collector;
 use ATK4PHPDebugBar\Collector\ATK4Logger;
 use DebugBar\DataCollector\DataCollectorInterface;
 use DebugBar\DataCollector\ExceptionsCollector;
@@ -78,7 +77,7 @@ class DebugBar
 
         $this->timeDataCollector = new TimeDataCollector();
 
-        $this->debugBar         = new \DebugBar\DebugBar();
+        $this->debugBar = new \DebugBar\DebugBar();
 
         $this->debugBarRenderer = $this->debugBar->getJavascriptRenderer();
 
@@ -144,7 +143,7 @@ class DebugBar
             $this->debugBar->collect();
             $this->app->html->template->appendHTML(
                 'Content',
-                $this->debugBarRenderer->render(true, !$this->isJsonRequest())
+                $this->debugBarRenderer->render(true, ! $this->isJsonRequest())
             );
         });
 
@@ -198,8 +197,8 @@ class DebugBar
     protected function processAssets(): void
     {
         $relative_url = $this->assets_resources_url;
-        $relative_url.= $relative_url === null ? '/' : '';
-        $relative_url.= $this->assets_resources_path;
+        $relative_url .= $relative_url === null ? '/' : '';
+        $relative_url .= $this->assets_resources_path;
 
         // already loaded by ATK
         $this->debugBarRenderer->disableVendor('jquery');
@@ -279,7 +278,7 @@ class DebugBar
         $this->addCollector(new MemoryCollector());
         $this->addCollector(new ExceptionsCollector());
 
-        if (!$this->hasCollector($this->timeDataCollector->getName())) {
+        if (! $this->hasCollector($this->timeDataCollector->getName())) {
             $this->addCollector($this->timeDataCollector);
         }
     }
@@ -304,7 +303,7 @@ class DebugBar
         $pdo = new TraceablePDO($db->connection->connection());
         $this->addCollector(new PDOCollector($pdo, $this->timeDataCollector));
 
-        if (!$this->hasCollector($this->timeDataCollector->getName())) {
+        if (! $this->hasCollector($this->timeDataCollector->getName())) {
             $this->addCollector($this->timeDataCollector);
         }
     }
