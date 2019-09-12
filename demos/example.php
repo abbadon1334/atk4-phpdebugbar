@@ -1,6 +1,6 @@
 <?php
 
-include 'bootstrap.php';
+require_once 'bootstrap.php';
 
 use atk4\ui\App;
 

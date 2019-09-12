@@ -26,15 +26,19 @@ $app = new App([
 ]);
 
 $app->initLayout('Centered');
-$app->add($debugBar = new ATK4PHPDebugBar\DebugBar());
+$app->add($debugBar = new ATK4PHPDebugBar\DebugBar([
+    'open_handler' => '/demos/handler-ajax.php',
+]));
+
 $debugBar->setAssetsResourcesUrl('../');
 //$debugBar->addDefaultCollectors();
+
 $debugBar->addATK4PersistenceSQLCollector();
 
 $model_user = new User($app->db);
 
 // Migration : if not exists table create it
-(\atk4\schema\Migration::getMigration($model_user))->migrate();
+\atk4\schema\Migration::getMigration($model_user)->migrate();
 
 $model_user->insert(['name'=>'test 1', 'email'=>'test1@test.it']);
 $model_user->insert(['name'=>'test 2', 'email'=>'test2@test.it']);

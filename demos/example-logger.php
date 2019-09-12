@@ -1,6 +1,6 @@
 <?php
 
-include 'bootstrap.php';
+require_once 'bootstrap.php';
 
 use atk4\ui\App;
 use ATK4PHPDebugBar\DebugBar;
@@ -21,7 +21,7 @@ $debugBar->setAssetsResourcesUrl('../');
 //$debugBar->addDefaultCollectors();
 $debugBar->addATK4LoggerCollector();
 
-$app->getDebugBarCollector('ATKAppLog')->addMessage('first message');
+$app->getDebugBarCollector('app')->addMessage('first message');
 
 $loader = $app->add('Loader');
 
