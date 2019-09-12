@@ -22,12 +22,12 @@ $db = \atk4\data\Persistence::connect('sqlite::memory:');
 
 $app = new App([
     'title' => 'Agile UI - DebugBar',
-    'db'    => $db
+    'db'    => $db,
 ]);
 
 $app->initLayout('Centered');
 $app->add($debugBar = new ATK4PHPDebugBar\DebugBar([
-    'open_handler' => '/demos/handler-ajax.php'
+    'open_handler' => '/demos/handler-ajax.php',
 ]));
 
 $debugBar->setAssetsResourcesUrl('../');
