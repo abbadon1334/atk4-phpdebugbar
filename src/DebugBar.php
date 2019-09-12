@@ -87,6 +87,7 @@ class DebugBar
         $this->setUpApp();
 
         if ($this->app->hasMethod('getRouter')) {
+            // @codeCoverageIgnoreStart
             $router = $this->app->getRouter();
 
             $router
@@ -114,6 +115,7 @@ class DebugBar
                         ]
                     )
                 );
+            // @codeCoverageIgnoreEnd
         }
     }
 

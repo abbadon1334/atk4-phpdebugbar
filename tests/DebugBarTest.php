@@ -41,6 +41,7 @@ class DebugBarTest extends TestCase
     }
 
     /**
+     * Only for increase coverage, cover 1 line of code
      * @runInSeparateProcess
      */
     public function testSendMessagesViaHeaders()

@@ -12,11 +12,12 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.2.0",
+        "ext-pdo": "*",
         "atk4/ui": "dev-develop",
-        "maximebf/debugbar": "^1.15@dev",
-        "ext-pdo": "*"
+        "maximebf/debugbar": "^1.15@dev"
     },
     "require-dev":{
+        "abbadon1334/atk4-fastroute": "dev-master",
         "atk4/data": "dev-develop",
         "atk4/schema": "dev-develop",
         "codacy/coverage": "dev-master",

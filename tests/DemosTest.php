@@ -43,6 +43,7 @@ class DemosTest extends TestCase
     {
         return [
             ['example.php'],
+            ['example-ajax.php'],
             ['example-logger.php'],
             ['example-logger-debugTrait.php'],
             ['example-persistence.php'],
