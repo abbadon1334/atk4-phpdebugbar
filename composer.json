@@ -13,13 +13,13 @@
     "require": {
         "php": ">=7.2.0",
         "ext-pdo": "*",
-        "atk4/ui": "dev-develop",
-        "maximebf/debugbar": "^1.15@dev"
+        "atk4/ui": "2.0.2",
+        "maximebf/debugbar": "^1.16.*"
     },
     "require-dev":{
         "abbadon1334/atk4-fastroute": "dev-master",
-        "atk4/data": "dev-develop",
-        "atk4/schema": "dev-develop",
+        "atk4/data": "*",
+        "atk4/schema": "*",
         "codacy/coverage": "dev-master",
         "friendsofphp/php-cs-fixer": "dev-master@dev",
         "monolog/monolog": "^2.0@dev",
