@@ -12,7 +12,7 @@ class DebugBarTest extends TestCase
     protected $app;
     protected $debugbar;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $app = new App([
             'title' => 'Agile UI - DebugBar',
