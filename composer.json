@@ -14,7 +14,7 @@
         "php": ">=7.2.0",
         "ext-pdo": "*",
         "atk4/ui": "2.0.2",
-        "maximebf/debugbar": "^1.16.*"
+        "maximebf/debugbar": "^1.*"
     },
     "require-dev":{
         "abbadon1334/atk4-fastroute": "dev-master",
