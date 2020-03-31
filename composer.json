@@ -13,7 +13,7 @@
     "require": {
         "php": ">=7.2.0",
         "ext-pdo": "*",
-        "atk4/ui": "2.0.2",
+        "atk4/ui": "2.1.0",
         "maximebf/debugbar": "1.15.1"
     },
     "require-dev":{
