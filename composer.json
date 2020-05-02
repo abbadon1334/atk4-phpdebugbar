@@ -22,7 +22,7 @@
         "atk4/schema": "*",
         "codacy/coverage": "dev-master",
         "friendsofphp/php-cs-fixer": "dev-master@dev",
-        "monolog/monolog": "^2.0@dev",
+        "monolog/monolog": "2.0.2",
         "phpmd/phpmd": "2.8.2",
         "phpmetrics/phpmetrics": "dev-master@dev",
         "phpstan/phpstan": "0.12.14",
