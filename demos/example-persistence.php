@@ -3,7 +3,6 @@
 require_once 'bootstrap.php';
 
 use atk4\ui\App;
-use ATK4PHPDebugBar\DebugBar;
 
 class User extends \atk4\data\Model
 {
