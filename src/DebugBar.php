@@ -119,7 +119,7 @@ class DebugBar
     }
 
     /**
-     * @param DataCollectorInterface $dataCollector
+     * @param  DataCollectorInterface  $dataCollector
      *
      * @throws DebugBarException
      */
@@ -226,10 +226,10 @@ class DebugBar
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
+     * @return DataCollectorInterface
      *
      * @throws DebugBarException
-     * @return DataCollectorInterface
      */
     public function getCollector(string $name): DataCollectorInterface
     {
@@ -237,8 +237,7 @@ class DebugBar
     }
 
     /**
-     * @param string $name
-     *
+     * @param  string  $name
      * @return bool
      */
     public function hasCollector(string $name): bool
@@ -247,8 +246,7 @@ class DebugBar
     }
 
     /**
-     * @param string $url
-     *
+     * @param  string  $url
      * @return $this
      */
     public function setAssetsResourcesUrl(string $url)
@@ -259,8 +257,7 @@ class DebugBar
     }
 
     /**
-     * @param string $path
-     *
+     * @param  string  $path
      * @return $this
      */
     public function setAssetsResourcesPath(string $path)
@@ -294,7 +291,7 @@ class DebugBar
     }
 
     /**
-     * @param Persistence\SQL|null $persistence
+     * @param  Persistence\SQL|null  $persistence
      *
      * @throws DebugBarException
      */
