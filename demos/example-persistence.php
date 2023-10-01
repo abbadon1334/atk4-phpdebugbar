@@ -3,7 +3,6 @@
 require_once 'bootstrap.php';
 
 use atk4\ui\App;
-use ATK4PHPDebugBar\DebugBar;
 
 class User extends \atk4\data\Model
 {
@@ -34,7 +33,7 @@ $debugBar->addATK4PersistenceSQLCollector();
 $model_user = new User($app->db);
 
 // Migration : if not exists table create it
-(\atk4\schema\Migration::getMigration($model_user))->migrate();
+\atk4\schema\Migration::getMigration($model_user)->migrate();
 
 $model_user->insert(['name'=>'test 1', 'email'=>'test1@test.it']);
 $model_user->insert(['name'=>'test 2', 'email'=>'test2@test.it']);
