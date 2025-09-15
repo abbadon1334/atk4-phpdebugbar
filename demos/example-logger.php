@@ -3,7 +3,6 @@
 require_once 'bootstrap.php';
 
 use atk4\ui\App;
-use ATK4PHPDebugBar\DebugBar;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -12,7 +11,7 @@ $monolog->pushHandler(new StreamHandler(__DIR__.'/test.log', Logger::DEBUG));
 
 $app = new App([
     'title' => 'Agile UI - DebugBar',
-    'logger'=> $monolog,
+    'logger' => $monolog,
 ]);
 
 $app->initLayout('Centered');
