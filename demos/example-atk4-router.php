@@ -32,7 +32,7 @@ class ATKView extends View
         // Migration : if not exists table create it
         \atk4\schema\Migration::getMigration($model_user)->migrate();
 
-        $model_user->insert(['name'=>'test '.rand(0, 800), 'email'=>'test1@test.it']);
+        $model_user->insert(['name' => 'test '.rand(0, 800), 'email' => 'test1@test.it']);
 
         $loader = $this->app->add('Loader');
 
@@ -55,7 +55,7 @@ class ATKView extends View
 
 $app = new App([
     'title' => 'Agile UI - DebugBar',
-    'db'    => \atk4\data\Persistence::connect('sqlite::memory:'),
+    'db' => \atk4\data\Persistence::connect('sqlite::memory:'),
     'always_run' => false,
 ]);
 
