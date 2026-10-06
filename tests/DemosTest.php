@@ -16,6 +16,7 @@ class DemosTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @dataProvider dataProviderTestDemos
      */
     public function testDemos($file)
